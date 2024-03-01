@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  password: String,
-  subscribedBlogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
+  googleId: String,
+  role: { type: String, enum: ["admin", "superuser", "user"], default: "user" },
 });
 
 const User = mongoose.model("User", userSchema);
