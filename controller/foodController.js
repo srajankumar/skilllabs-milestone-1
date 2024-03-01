@@ -52,15 +52,12 @@ exports.searchFoodByName = async (req, res) => {
 exports.postFood = async (req, res) => {
   try {
     const { name, description, price, image, category } = req.body;
-
-    // Validate the presence of required fields
     if (!name || !description || !price || !image || !category) {
       return res
         .status(400)
         .json({ error: "Incomplete information for food item" });
     }
 
-    // Create a new food item
     const newFood = new Food({
       name,
       description,
@@ -69,7 +66,6 @@ exports.postFood = async (req, res) => {
       category,
     });
 
-    // Save the food item to the database
     await newFood.save();
 
     res

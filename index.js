@@ -13,16 +13,13 @@ const logoutRoutes = require("./logout/logout");
 
 const app = express();
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI);
 const db = mongoose.connection;
 
-// Check MongoDB connection
 db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-// Passport.js for Google authentication
 passport.use(
   new GoogleStrategy(
     {
@@ -32,25 +29,21 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Check if necessary profile information is present
         if (!profile || !profile.emails || !profile.emails[0]) {
           return done(null, false, {
             message: "Incomplete profile information",
           });
         }
 
-        // Check if user already exists in the database
         let user = await User.findOne({ googleId: profile.id });
 
         if (user) {
           return done(null, user);
         } else {
-          // If the user doesn't exist, create a new user
           user = new User({
             googleId: profile.id,
             displayName: profile.displayName || "Default Name",
             email: profile.emails[0].value || "Default Email",
-            // Add other properties as needed
           });
 
           await user.save();
@@ -63,7 +56,6 @@ passport.use(
   )
 );
 
-// Serialization and Deserialization
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
